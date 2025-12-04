@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Lume - {{ produto.nome }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="bg-[#383732] border border-[#C9A24B] rounded-lg p-8">
+            <div class="aspect-square bg-black rounded-lg flex items-center justify-center mb-4">
+                <img src="{{ produto.imagem_url or '/static/imgs/logo.png' }}" 
+                     alt="{{ produto.nome }}" 
+                     class="w-full h-full object-contain p-8">
+            </div>
+        </div>
+
+        <div>
+            <h1 class="titulo-font text-4xl font-bold text-white mb-4">{{ produto.nome }}</h1>
+            <p class="texto-font text-gray-300 mb-6 leading-relaxed">{{ produto.descricao }}</p>
+            
+            <div class="mb-8">
+                <p class="texto-font text-[#C9A24B] text-3xl font-bold mb-6" id="preco-display">
+                    R$ {{ "%.2f"|format(produto.preco_base) }}
+                </p>
+            </div>
+
+            <form id="personalizacao-form" class="mb-8">
+                <div class="space-y-4">
+                    <div>
+                        <label class="texto-font text-white block mb-2">Tamanho</label>
+                        <select id="tamanho" name="tamanho" class="w-full px-4 py-2 bg-[#383732] border border-[#C9A24B] rounded text-white focus:outline-none focus:border-[#B8923A]">
+                            {% for tamanho in tamanhos %}
+                            <option value="{{ tamanho.tamanho }}">{{ tamanho.tamanho }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="texto-font text-white block mb-2">Material</label>
+                        <select id="material" name="material" class="w-full px-4 py-2 bg-[#383732] border border-[#C9A24B] rounded text-white focus:outline-none focus:border-[#B8923A]">
+                            {% for material in materiais %}
+                            <option value="{{ material.id }}" data-preco="{{ material.preco_adicional }}">
+                                {{ material.nome }} (+R$ {{ "%.2f"|format(material.preco_adicional) }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="texto-font text-white block mb-2">Pedra</label>
+                        <select id="pedra" name="pedra" class="w-full px-4 py-2 bg-[#383732] border border-[#C9A24B] rounded text-white focus:outline-none focus:border-[#B8923A]">
+                            {% for pedra in pedras %}
+                            <option value="{{ pedra.id }}" data-preco="{{ pedra.preco_adicional }}">
+                                {{ pedra.nome }} (+R$ {{ "%.2f"|format(pedra.preco_adicional) }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="texto-font text-white block mb-2">Quantidade</label>
+                        <input type="number" id="quantidade" name="quantidade" value="1" min="1" max="10" 
+                               class="w-full px-4 py-2 bg-[#383732] border border-[#C9A24B] rounded text-white focus:outline-none focus:border-[#B8923A]">
+                    </div>
+                </div>
+            </form>
+
+            <div class="flex gap-4 mb-8">
+                {% if current_user.is_authenticated %}
+                <button id="favoritar-btn" 
+                        class="flex-1 bg-[#C9A24B] text-[#383732] px-6 py-3 rounded hover:bg-[#B8923A] transition texto-font font-semibold">
+                    {{ 'Remover dos Favoritos' if favoritado else 'Adicionar aos Favoritos' }}
+                </button>
+                <button id="adicionar-carrinho" 
+                        class="flex-1 bg-[#C9A24B] text-[#383732] px-6 py-3 rounded hover:bg-[#B8923A] transition texto-font font-semibold">
+                    Adicionar ao Carrinho
+                </button>
+                {% else %}
+                <a href="{{ url_for('login') }}" 
+                   class="flex-1 text-center bg-[#C9A24B] text-[#383732] px-6 py-3 rounded hover:bg-[#B8923A] transition texto-font font-semibold">
+                    Faça login para comprar
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-12">
+        <h2 class="titulo-font text-2xl font-bold text-white mb-6">Avaliações</h2>
+        <div class="space-y-4">
+            {% for avaliacao in avaliacoes %}
+            <div class="bg-[#383732] border border-[#C9A24B] rounded-lg p-6">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="texto-font text-white font-semibold">Usuário</span>
+                    <span class="texto-font text-[#C9A24B]">{% for i in range(avaliacao.nota) %}★{% endfor %}</span>
+                </div>
+                {% if avaliacao.comentario %}
+                <p class="texto-font text-gray-300">{{ avaliacao.comentario }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if current_user.is_authenticated %}
+        <div class="mt-8 bg-[#383732] border border-[#C9A24B] rounded-lg p-6">
+            <h3 class="titulo-font text-xl font-bold text-white mb-4">Deixe sua avaliação</h3>
+            <form method="POST" action="{{ url_for('avaliar', produto_id=produto.id) }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-4">
+                    <label class="texto-font text-white block mb-2">Nota</label>
+                    <select name="nota" class="w-full px-4 py-2 bg-[#383732] border border-[#C9A24B] rounded text-white focus:outline-none focus:border-[#B8923A]">
+                        <option value="5">5 estrelas</option>
+                        <option value="4">4 estrelas</option>
+                        <option value="3">3 estrelas</option>
+                        <option value="2">2 estrelas</option>
+                        <option value="1">1 estrela</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="texto-font text-white block mb-2">Comentário (opcional)</label>
+                    <textarea name="comentario" rows="3" class="w-full px-4 py-2 bg-[#383732] border border-[#C9A24B] rounded text-white focus:outline-none focus:border-[#B8923A]"></textarea>
+                </div>
+                <button type="submit" class="bg-[#C9A24B] text-[#383732] px-6 py-2 rounded hover:bg-[#B8923A] transition texto-font font-semibold">
+                    Enviar Avaliação
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const materialSelect = document.getElementById('material');
+    const pedraSelect = document.getElementById('pedra');
+    const precoDisplay = document.getElementById('preco-display');
+    const produtoPrecoBase = {{ produto.preco_base }};
+
+    function atualizarPreco() {
+        const materialPreco = parseFloat(materialSelect.options[materialSelect.selectedIndex].dataset.preco);
+        const pedraPreco = parseFloat(pedraSelect.options[pedraSelect.selectedIndex].dataset.preco);
+        const precoTotal = produtoPrecoBase + materialPreco + pedraPreco;
+        precoDisplay.textContent = 'R$ ' + precoTotal.toFixed(2).replace('.', ',');
+    }
+
+    materialSelect.addEventListener('change', atualizarPreco);
+    pedraSelect.addEventListener('change', atualizarPreco);
+
+    {% if current_user.is_authenticated %}
+    const favoritarBtn = document.getElementById('favoritar-btn');
+    const adicionarCarrinhoBtn = document.getElementById('adicionar-carrinho');
+
+    favoritarBtn.addEventListener('click', function() {
+        fetch('{{ url_for("favoritar", produto_id=produto.id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            favoritarBtn.textContent = data.favoritado ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos';
+        });
+    });
+
+    adicionarCarrinhoBtn.addEventListener('click', function() {
+        const data = {
+            produto_id: {{ produto.id }},
+            quantidade: parseInt(document.getElementById('quantidade').value),
+            tamanho: document.getElementById('tamanho').value,
+            material_id: parseInt(document.getElementById('material').value),
+            pedra_id: parseInt(document.getElementById('pedra').value)
+        };
+
+        fetch('{{ url_for("adicionar_carrinho") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Produto adicionado ao carrinho!');
+                window.location.href = '{{ url_for("carrinho") }}';
+            }
+        });
+    });
+    {% endif %}
+});
+</script>
+{% endblock %}
+

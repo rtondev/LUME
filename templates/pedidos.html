@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Lume - Meus Pedidos{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="titulo-font text-3xl font-bold text-white mb-8">Meus Pedidos</h1>
+
+    {% if pedidos %}
+    <div class="space-y-6">
+        {% for pedido in pedidos %}
+        <div class="bg-[#383732] border border-[#C9A24B] rounded-lg p-6">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h3 class="titulo-font text-xl font-semibold text-white">Pedido #{{ pedido.id }}</h3>
+                    <p class="texto-font text-gray-300 text-sm">
+                        Data: {{ pedido.created_at.strftime('%d/%m/%Y %H:%M') }}
+                    </p>
+                </div>
+                <div class="text-right">
+                    <span class="texto-font text-[#C9A24B] text-lg font-bold">
+                        R$ {{ "%.2f"|format(pedido.total) }}
+                    </span>
+                    <p class="texto-font text-gray-300 text-sm capitalize">{{ pedido.status }}</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-[#C9A24B] pt-4 mt-4">
+                <p class="texto-font text-white mb-2">Itens:</p>
+                <ul class="space-y-2">
+                    {% for item in pedido.itens %}
+                    <li class="texto-font text-gray-300 text-sm">
+                        {{ item.quantidade }}x Anel Solitário Lume - 
+                        Tamanho: {{ item.tamanho }} | 
+                        Material: {{ item.material }} | 
+                        Pedra: {{ item.pedra }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-[#383732] border border-[#C9A24B] rounded-lg p-12 text-center">
+        <p class="texto-font text-gray-300 text-lg mb-4">Você ainda não realizou nenhum pedido.</p>
+        <a href="{{ url_for('index') }}" 
+           class="inline-block bg-[#C9A24B] text-[#383732] px-6 py-3 rounded hover:bg-[#B8923A] transition texto-font font-semibold">
+            Ver Produtos
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

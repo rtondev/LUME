@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Lora:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --cor-dourado: #C9A24B;
+    --cor-grafite: #383732;
+    --cor-branco: #FFFFFF;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #000000;
+    color: var(--cor-branco);
+}
+
+.logo-font {
+    font-family: 'Cinzel', serif;
+    color: var(--cor-dourado);
+}
+
+.titulo-font {
+    font-family: 'Lora', serif;
+    color: var(--cor-branco);
+}
+
+.texto-font {
+    font-family: 'Poppins', sans-serif;
+}
+
+.bg-dourado {
+    background-color: var(--cor-dourado);
+}
+
+.bg-grafite {
+    background-color: var(--cor-grafite);
+}
+
+.text-dourado {
+    color: var(--cor-dourado);
+}
+
+.text-grafite {
+    color: var(--cor-grafite);
+}
+
+.border-dourado {
+    border-color: var(--cor-dourado);
+}
+
+.btn-dourado {
+    background-color: var(--cor-dourado);
+    color: var(--cor-grafite);
+    border: none;
+}
+
+.btn-dourado:hover {
+    background-color: #B8923A;
+    color: var(--cor-grafite);
+}
+
+.btn-outline-dourado {
+    border-color: var(--cor-dourado);
+    color: var(--cor-dourado);
+}
+
+.btn-outline-dourado:hover {
+    background-color: var(--cor-dourado);
+    color: var(--cor-grafite);
+}
+
+input, select, textarea {
+    background-color: var(--cor-grafite);
+    border-color: var(--cor-dourado);
+    color: var(--cor-branco);
+}
+
+input:focus, select:focus, textarea:focus {
+    background-color: var(--cor-grafite);
+    border-color: var(--cor-dourado);
+    color: var(--cor-branco);
+}
+
+.card {
+    background-color: var(--cor-grafite);
+    border-color: var(--cor-dourado);
+}
+

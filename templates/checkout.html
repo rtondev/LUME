@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Lume - Checkout{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <h1 class="titulo-font text-3xl font-bold text-white mb-8">Finalizar Compra</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-[#383732] border border-[#C9A24B] rounded-lg p-8">
+            <h2 class="titulo-font text-2xl font-bold text-white mb-6">Resumo do Pedido</h2>
+            <div class="space-y-4 mb-6">
+                {% for item in carrinho %}
+                <div class="border-b border-[#C9A24B] pb-4">
+                    <p class="texto-font text-white font-semibold">Anel Solitário Lume</p>
+                    <p class="texto-font text-gray-300 text-sm">
+                        Tamanho: {{ item.tamanho }} | Material: {{ item.material }} | Pedra: {{ item.pedra }}
+                    </p>
+                    <p class="texto-font text-gray-300 text-sm">Quantidade: {{ item.quantidade }}</p>
+                    <p class="texto-font text-[#C9A24B] font-semibold">
+                        R$ {{ "%.2f"|format(item.subtotal) }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="flex justify-between items-center pt-4 border-t border-[#C9A24B]">
+                <span class="titulo-font text-xl font-bold text-white">Total:</span>
+                <span class="texto-font text-[#C9A24B] text-2xl font-bold">
+                    R$ {{ "%.2f"|format(total) }}
+                </span>
+            </div>
+        </div>
+
+        <div class="bg-[#383732] border border-[#C9A24B] rounded-lg p-8">
+            <h2 class="titulo-font text-2xl font-bold text-white mb-6">Método de Pagamento</h2>
+            <form method="POST" action="{{ url_for('checkout') }}">
+                <div class="space-y-4 mb-6">
+                    <label class="flex items-center p-4 border border-[#C9A24B] rounded cursor-pointer hover:border-[#B8923A] transition">
+                        <input type="radio" name="metodo_pagamento" value="pix" class="mr-3" checked>
+                        <span class="texto-font text-white">PIX</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-[#C9A24B] rounded cursor-pointer hover:border-[#B8923A] transition">
+                        <input type="radio" name="metodo_pagamento" value="cartao" class="mr-3">
+                        <span class="texto-font text-white">Cartão de Crédito</span>
+                    </label>
+                    <label class="flex items-center p-4 border border-[#C9A24B] rounded cursor-pointer hover:border-[#B8923A] transition">
+                        <input type="radio" name="metodo_pagamento" value="boleto" class="mr-3">
+                        <span class="texto-font text-white">Boleto</span>
+                    </label>
+                </div>
+                <button type="submit" 
+                        class="w-full bg-[#C9A24B] text-[#383732] px-6 py-3 rounded hover:bg-[#B8923A] transition texto-font font-semibold">
+                    Confirmar Pedido
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

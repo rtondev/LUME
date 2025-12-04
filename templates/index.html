@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Lume - Início{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center mb-12">
+        <h1 class="titulo-font text-4xl md:text-5xl font-bold text-white mb-4">
+            Bem-vindo à Lume
+        </h1>
+        <p class="texto-font text-lg text-gray-300 max-w-2xl mx-auto">
+            Descubra a elegância e sofisticação da nossa aliança solitária exclusiva. 
+            Cada detalhe foi pensado para transmitir brilho e significado único.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for produto in produtos %}
+        <div class="bg-[#383732] border border-[#C9A24B] rounded-lg overflow-hidden hover:border-[#B8923A] transition">
+            <div class="aspect-square bg-black flex items-center justify-center">
+                <img src="{{ produto.imagem_url or '/static/imgs/logo.png' }}" 
+                     alt="{{ produto.nome }}" 
+                     class="w-full h-full object-contain p-4">
+            </div>
+            <div class="p-6">
+                <h3 class="titulo-font text-xl font-semibold text-white mb-2">{{ produto.nome }}</h3>
+                <p class="texto-font text-gray-300 text-sm mb-4 line-clamp-2">{{ produto.descricao[:100] }}...</p>
+                <div class="flex items-center justify-between">
+                    <span class="texto-font text-[#C9A24B] text-xl font-bold">
+                        R$ {{ "%.2f"|format(produto.preco_base) }}
+                    </span>
+                    <a href="{{ url_for('produto', id=produto.id) }}" 
+                       class="bg-[#C9A24B] text-[#383732] px-4 py-2 rounded hover:bg-[#B8923A] transition texto-font">
+                        Ver Detalhes
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if not produtos %}
+    <div class="text-center py-12">
+        <p class="texto-font text-gray-400">Nenhum produto disponível no momento.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Lume - Administração - Pedidos{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="titulo-font text-3xl font-bold text-white">Gerenciar Pedidos</h1>
+        <a href="{{ url_for('admin_produtos') }}" class="bg-[#C9A24B] text-[#383732] px-4 py-2 rounded hover:bg-[#B8923A] transition texto-font font-semibold">
+            Gerenciar Produtos
+        </a>
+    </div>
+
+    {% if pedidos %}
+    <div class="bg-[#383732] border border-[#C9A24B] rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-[#C9A24B] text-[#383732]">
+                    <tr>
+                        <th class="px-6 py-3 text-left texto-font font-semibold">ID</th>
+                        <th class="px-6 py-3 text-left texto-font font-semibold">Cliente</th>
+                        <th class="px-6 py-3 text-left texto-font font-semibold">Data</th>
+                        <th class="px-6 py-3 text-left texto-font font-semibold">Total</th>
+                        <th class="px-6 py-3 text-left texto-font font-semibold">Status</th>
+                        <th class="px-6 py-3 text-left texto-font font-semibold">Pagamento</th>
+                        <th class="px-6 py-3 text-left texto-font font-semibold">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#C9A24B]">
+                    {% for pedido in pedidos %}
+                    <tr class="hover:bg-[#2a2a26] transition">
+                        <td class="px-6 py-4 texto-font text-white">#{{ pedido.id }}</td>
+                        <td class="px-6 py-4 texto-font text-white">{{ pedido.usuario.nome }}</td>
+                        <td class="px-6 py-4 texto-font text-gray-300">{{ pedido.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="px-6 py-4 texto-font text-[#C9A24B] font-semibold">R$ {{ "%.2f"|format(pedido.total) }}</td>
+                        <td class="px-6 py-4">
+                            <span class="texto-font px-2 py-1 rounded text-sm capitalize
+                                {% if pedido.status == 'entregue' %}bg-green-600 text-white
+                                {% elif pedido.status == 'cancelado' %}bg-red-600 text-white
+                                {% elif pedido.status == 'enviado' %}bg-blue-600 text-white
+                                {% elif pedido.status == 'processando' %}bg-yellow-600 text-white
+                                {% else %}bg-gray-600 text-white{% endif %}">
+                                {{ pedido.status }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 texto-font text-gray-300 capitalize">{{ pedido.metodo_pagamento or 'N/A' }}</td>
+                        <td class="px-6 py-4">
+                            <a href="{{ url_for('admin_pedido_detalhes', pedido_id=pedido.id) }}" 
+                               class="texto-font text-[#C9A24B] hover:text-[#B8923A] transition">
+                                Ver Detalhes
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-[#383732] border border-[#C9A24B] rounded-lg p-12 text-center">
+        <p class="texto-font text-gray-300 text-lg">Nenhum pedido encontrado.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
